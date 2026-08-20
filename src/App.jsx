@@ -346,20 +346,29 @@ function MusicPlayer() {
     return () => audio.removeEventListener('canplaythrough', onCanPlay);
   }, []);
 
-  // Auto-start on the visitor's very first interaction anywhere on the page
+  // Attempt to play immediately on mount, and fallback to interaction
   useEffect(() => {
-    const autoPlay = () => {
-      const audio = audioRef.current;
-      if (!audio || playing) return;
-      audio.play().then(() => setPlaying(true)).catch(() => {});
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const tryPlay = () => {
+      if (playing) return;
+      audio.play().then(() => setPlaying(true)).catch(() => {
+        // Browser blocked autoplay, wait for user interaction
+      });
     };
-    document.addEventListener('click',      autoPlay, { once: true });
-    document.addEventListener('touchstart', autoPlay, { once: true });
-    document.addEventListener('keydown',    autoPlay, { once: true });
+
+    // Try immediately
+    tryPlay();
+
+    // Fallback: start on the visitor's very first interaction anywhere on the page
+    document.addEventListener('click',      tryPlay, { once: true });
+    document.addEventListener('touchstart', tryPlay, { once: true });
+    document.addEventListener('keydown',    tryPlay, { once: true });
     return () => {
-      document.removeEventListener('click',      autoPlay);
-      document.removeEventListener('touchstart', autoPlay);
-      document.removeEventListener('keydown',    autoPlay);
+      document.removeEventListener('click',      tryPlay);
+      document.removeEventListener('touchstart', tryPlay);
+      document.removeEventListener('keydown',    tryPlay);
     };
   }, [playing]);
 
@@ -378,7 +387,7 @@ function MusicPlayer() {
   return (
     <>
       {/* 🎵 Drop your romantic MP3 at: public/audio/romantic.mp3 */}
-      <audio ref={audioRef} src="/audio/romantic.mp3" loop preload="auto" />
+      <audio ref={audioRef} src="/audio/romantic.mp3" loop preload="auto" autoPlay />
       <button
         className={`music-btn ${playing ? 'playing' : ''} ${ready ? 'visible' : ''}`}
         onClick={toggle}
