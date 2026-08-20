@@ -1354,3 +1354,35 @@
   height: auto;
   overflow: visible;
 }
+
+/* ── Footer Contact ──────────────────────────────────────── */
+.footer-contact {
+  margin-top: 24px;
+}
+
+.contact-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  background: rgba(183,110,121,0.05);
+  border: 1px solid rgba(183,110,121,0.2);
+  color: var(--medium);
+  text-decoration: none;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  transition: var(--transition);
+}
+
+.contact-link:hover {
+  background: rgba(183,110,121,0.1);
+  transform: translateY(-2px);
+  border-color: var(--rose-gold-light);
+}
+
+.contact-link strong {
+  color: var(--rose-gold);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}

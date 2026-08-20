@@ -325,8 +325,14 @@ function Footer() {
         ))}
       </ul>
       <p className="footer-copy">
+        &copy; {new Date().getFullYear()} PrismLogic. All rights reserved.<br/>
         Made with <span className="footer-heart">♥</span> for our engagement celebration
       </p>
+      <div className="footer-contact">
+        <a href="https://wa.me/94754461633" target="_blank" rel="noreferrer" className="contact-link" aria-label="Contact via WhatsApp">
+          <span>WhatsApp / Call:</span> <strong>+94 75 446 1633</strong>
+        </a>
+      </div>
     </footer>
   );
 }
