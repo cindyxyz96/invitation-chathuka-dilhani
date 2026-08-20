@@ -1,0 +1,346 @@
+import { useEffect, useRef, useState } from 'react';
+import './index.css';
+import './App.css';
+
+/* ─── Helpers ───────────────────────────────────────────── */
+function useIntersection(ref, threshold = 0.15) {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    if (!ref.current) return;
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } },
+      { threshold }
+    );
+    obs.observe(ref.current);
+    return () => obs.disconnect();
+  }, [ref, threshold]);
+  return visible;
+}
+
+/* ─── Floating Petals ───────────────────────────────────── */
+function Petals() {
+  const petals = Array.from({ length: 12 }, (_, i) => ({
+    id: i,
+    emoji: ['🌸', '🌹', '✿', '❀', '🌺'][i % 5],
+    left: `${(i * 8.3) % 100}%`,
+    delay: `${i * 0.8}s`,
+    duration: `${8 + (i % 4) * 2}s`,
+    size: `${1 + (i % 3) * 0.3}rem`,
+  }));
+  return (
+    <>
+      {petals.map(p => (
+        <span
+          key={p.id}
+          className="petal"
+          style={{
+            left: p.left,
+            top: '-50px',
+            fontSize: p.size,
+            animationDelay: p.delay,
+            animationDuration: p.duration,
+          }}
+        >
+          {p.emoji}
+        </span>
+      ))}
+    </>
+  );
+}
+
+/* ─── Navbar ────────────────────────────────────────────── */
+function Navbar() {
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const fn = () => setScrolled(window.scrollY > 60);
+    window.addEventListener('scroll', fn);
+    return () => window.removeEventListener('scroll', fn);
+  }, []);
+  return (
+    <nav className={`navbar ${scrolled ? 'scrolled' : ''}`} aria-label="Main navigation">
+      <a href="#hero" className="navbar-brand">C &amp; D</a>
+      <ul className="navbar-links">
+        {[['#story', 'Our Story'], ['#countdown', 'Countdown'], ['#venue', 'Venue']].map(([href, label]) => (
+          <li key={href}><a href={href}>{label}</a></li>
+        ))}
+      </ul>
+    </nav>
+  );
+}
+
+/* ─── Hero ──────────────────────────────────────────────── */
+function Hero() {
+  const [bgLoaded, setBgLoaded] = useState(false);
+  useEffect(() => {
+    const img = new Image();
+    img.src = '/images/hero_bg.jpg';
+    img.onload = () => setBgLoaded(true);
+  }, []);
+
+  return (
+    <section className="hero" id="hero" aria-label="Hero invitation">
+      <div className={`hero-bg ${bgLoaded ? 'loaded' : ''}`} role="img" aria-label="Romantic floral background" />
+      <div className="hero-overlay" />
+      <Petals />
+      <div className="hero-content">
+        <p className="hero-eyebrow animate-fadeInUp delay-100">You are cordially invited to celebrate</p>
+        <h1 className="hero-names animate-fadeInUp delay-300">
+          Chathuka
+          <span className="ampersand">&amp;</span>
+          Dilhani
+        </h1>
+        <div className="hero-date-badge animate-fadeInUp delay-500">
+          <span>Wednesday</span>
+          <span className="dot" />
+          <span>2nd September 2026</span>
+          <span className="dot" />
+          <span>12:00 PM – 3:30 PM</span>
+        </div>
+      </div>
+      <div className="hero-scroll-hint">
+        <div className="scroll-line" />
+        <span>Scroll</span>
+      </div>
+    </section>
+  );
+}
+
+/* ─── Story ─────────────────────────────────────────────── */
+function Story() {
+  const ref = useRef(null);
+  const visible = useIntersection(ref);
+  return (
+    <section className="story-section" id="story" ref={ref} aria-label="Our story">
+      <p className={`section-label ${visible ? 'animate-fadeInUp' : 'opacity-0'}`}>Our Love Story</p>
+      <h2 className={`section-heading ${visible ? 'animate-fadeInUp delay-100' : 'opacity-0'}`}>
+        Eleven Years of <em>Love &amp; Laughter</em>
+      </h2>
+      <p className={`section-subtext ${visible ? 'animate-fadeInUp delay-200' : 'opacity-0'}`}>
+        What began 11 years ago as a beautiful connection has grown into a love story that fills every room it enters.
+      </p>
+
+      {/* 11 Years badge row */}
+      <div className={`years-badge-row ${visible ? 'animate-fadeInUp delay-300' : 'opacity-0'}`}>
+        <div className="years-badge">
+          <span className="years-number">11</span>
+          <span className="years-text">Years<br />of Love</span>
+        </div>
+        <div className="years-divider" />
+        <div className="years-stats">
+          <div className="years-stat">
+            <span className="stat-number">💍</span>
+            <span className="stat-label">Engaged</span>
+          </div>
+          <div className="years-stat">
+            <span className="stat-number">🌍</span>
+            <span className="stat-label">Adventures</span>
+          </div>
+          <div className="years-stat">
+            <span className="stat-number">♾️</span>
+            <span className="stat-label">Forever</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="story-grid">
+        <div className={`story-image-wrap ${visible ? 'animate-slideLeft delay-400' : 'opacity-0'}`}>
+          <img
+            src="/images/couple_photo.jpg"
+            alt="Chathuka and Dilhani together"
+            className="story-image"
+            loading="lazy"
+          />
+          <div className="story-image-badge">
+            <span className="year">2026</span>
+            <span className="label">Forever</span>
+          </div>
+        </div>
+        <div className={`story-text ${visible ? 'animate-slideRight delay-500' : 'opacity-0'}`}>
+          <blockquote className="quote">
+            "In all the world, there is no heart for me like yours."
+          </blockquote>
+          <p>
+            Eleven years ago, two souls found each other — and everything changed. What started as a quiet, beautiful friendship blossomed slowly into a love that neither of them could imagine living without. Through the seasons, through the milestones big and small, Chathuka and Dilhani have stood by each other's side with unwavering love and devotion.
+          </p>
+          <p>
+            Eleven years of laughter echoing through the house. Eleven years of adventures, of new mornings and cozy evenings, of building dreams and turning them into reality, one day at a time.
+          </p>
+          <p>
+            And now, after all those beautiful years, they are ready to make it official — to say to the world what their hearts have always known. ✨
+          </p>
+          <p className="story-signature">Chathuka &amp; Dilhani</p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─── Countdown ─────────────────────────────────────────── */
+function useCountdown(targetDate) {
+  const [time, setTime] = useState(() => calcTime(targetDate));
+  function calcTime(target) {
+    const diff = new Date(target) - new Date();
+    if (diff <= 0) return { days: 0, hours: 0, mins: 0, secs: 0 };
+    return {
+      days:  Math.floor(diff / 86400000),
+      hours: Math.floor((diff % 86400000) / 3600000),
+      mins:  Math.floor((diff % 3600000) / 60000),
+      secs:  Math.floor((diff % 60000) / 1000),
+    };
+  }
+  useEffect(() => {
+    const id = setInterval(() => setTime(calcTime(targetDate)), 1000);
+    return () => clearInterval(id);
+  }, [targetDate]);
+  return time;
+}
+
+function Countdown() {
+  const ref = useRef(null);
+  const visible = useIntersection(ref);
+  const { days, hours, mins, secs } = useCountdown('2026-09-02T12:00:00');
+  const blocks = [
+    { value: days,  label: 'Days' },
+    { value: hours, label: 'Hours' },
+    { value: mins,  label: 'Minutes' },
+    { value: secs,  label: 'Seconds' },
+  ];
+  return (
+    <section className="countdown-section" id="countdown" ref={ref} aria-label="Countdown to event">
+      <p className={`section-label ${visible ? 'animate-fadeInUp' : 'opacity-0'}`}>The Big Day</p>
+      <h2 className={`section-heading ${visible ? 'animate-fadeInUp delay-100' : 'opacity-0'}`}>
+        Counting Down to <em className="gold-shimmer">Forever</em>
+      </h2>
+      <p className={`section-subtext ${visible ? 'animate-fadeInUp delay-200' : 'opacity-0'}`}>
+        Wednesday, 2nd September 2026 · 12:00 PM – 3:30 PM
+      </p>
+      <div className={`countdown-grid ${visible ? 'animate-fadeInUp delay-300' : 'opacity-0'}`}>
+        {blocks.flatMap((b, i) => {
+          const items = [
+            <div className="countdown-block" key={b.label}>
+              <div className="countdown-number">{String(b.value).padStart(2, '0')}</div>
+              <div className="countdown-label">{b.label}</div>
+            </div>,
+          ];
+          if (i < blocks.length - 1) {
+            items.push(
+              <div className="countdown-separator" key={`sep-${i}`}>
+                <span>:</span>
+              </div>
+            );
+          }
+          return items;
+        })}
+      </div>
+    </section>
+  );
+}
+
+/* ─── Venue ─────────────────────────────────────────────── */
+// ⚠️  Replace the src URL below with your real Google Maps embed link when ready
+// To get it: Google Maps → Search your address → Share → Embed a map → Copy the src URL
+const GOOGLE_MAPS_EMBED_SRC = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126743.61616413654!2d79.77393!3d6.9218371!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae253d10f7a7003%3A0x320b2e4d32d3838d!2sColombo%2C%20Sri%20Lanka!5e0!3m2!1sen!2slk!4v1696000000000!5m2!1sen!2slk';
+
+function Venue() {
+  const ref = useRef(null);
+  const visible = useIntersection(ref);
+  return (
+    <section className="venue-section" id="venue" ref={ref} aria-label="Venue information">
+      <p className={`section-label ${visible ? 'animate-fadeInUp' : 'opacity-0'}`}>Where to Find Us</p>
+      <h2 className={`section-heading ${visible ? 'animate-fadeInUp delay-100' : 'opacity-0'}`}>
+        Join Us at <em>Home</em>
+      </h2>
+      <p className={`section-subtext ${visible ? 'animate-fadeInUp delay-200' : 'opacity-0'}`}>
+        An intimate celebration surrounded by the people we love most.
+      </p>
+
+      <div className={`venue-map-wrap ${visible ? 'animate-fadeInUp delay-300' : 'opacity-0'}`}>
+        {/* Event detail pills above the map */}
+        <div className="venue-pills">
+          <div className="venue-pill">
+            <span>📅</span>
+            <span>Wednesday, 2nd September 2026</span>
+          </div>
+          <div className="venue-pill">
+            <span>⏰</span>
+            <span>12:00 PM – 3:30 PM</span>
+          </div>
+          <div className="venue-pill">
+            <span>🏡</span>
+            <span>Home · Intimate Celebration</span>
+          </div>
+        </div>
+
+        {/* Google Maps embed */}
+        <div className="map-frame-wrap">
+          <iframe
+            id="venue-map"
+            title="Venue location on Google Maps"
+            src={GOOGLE_MAPS_EMBED_SRC}
+            width="100%"
+            height="460"
+            style={{ border: 0 }}
+            allowFullScreen=""
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+          />
+          <div className="map-pin-label">
+            <span>📍</span>
+            <span>Exact address shared with invited guests</span>
+          </div>
+        </div>
+
+        <a
+          href={`https://maps.google.com/?q=Colombo,Sri+Lanka`}
+          target="_blank"
+          rel="noreferrer"
+          className="btn-primary"
+          style={{ display: 'inline-flex', textDecoration: 'none', margin: '0 auto' }}
+          id="venue-map-btn"
+        >
+          <span>📍</span>
+          <span>Open in Google Maps</span>
+        </a>
+      </div>
+    </section>
+  );
+}
+
+/* ─── Footer ────────────────────────────────────────────── */
+function Footer() {
+  return (
+    <footer className="footer" aria-label="Footer">
+      <div className="divider" style={{ maxWidth: '200px', margin: '0 auto 40px' }}>
+        <div className="divider-line" style={{ background: 'linear-gradient(to right, transparent, rgba(183,110,121,0.4), transparent)' }} />
+        <div className="divider-diamond" />
+        <div className="divider-line" style={{ background: 'linear-gradient(to right, transparent, rgba(183,110,121,0.4), transparent)' }} />
+      </div>
+      <p className="footer-names">Chathuka &amp; Dilhani</p>
+      <p className="footer-tagline">2nd September 2026 · Home Celebration</p>
+      <ul className="footer-links">
+        {[['#hero', 'Home'], ['#story', 'Our Story'], ['#countdown', 'Countdown'], ['#venue', 'Venue']].map(([href, label]) => (
+          <li key={href}><a href={href}>{label}</a></li>
+        ))}
+      </ul>
+      <p className="footer-copy">
+        Made with <span className="footer-heart">♥</span> for our engagement celebration
+      </p>
+    </footer>
+  );
+}
+
+/* ─── App ───────────────────────────────────────────────── */
+export default function App() {
+  return (
+    <>
+      <Navbar />
+      <main>
+        <Hero />
+        <Story />
+        <Countdown />
+        <Venue />
+      </main>
+      <Footer />
+    </>
+  );
+}
