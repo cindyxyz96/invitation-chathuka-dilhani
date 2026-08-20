@@ -237,9 +237,11 @@ function Countdown() {
 }
 
 /* ─── Venue ─────────────────────────────────────────────── */
-// ⚠️  Replace the src URL below with your real Google Maps embed link when ready
-// To get it: Google Maps → Search your address → Share → Embed a map → Copy the src URL
-const GOOGLE_MAPS_EMBED_SRC = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126743.61616413654!2d79.77393!3d6.9218371!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae253d10f7a7003%3A0x320b2e4d32d3838d!2sColombo%2C%20Sri%20Lanka!5e0!3m2!1sen!2slk!4v1696000000000!5m2!1sen!2slk';
+// Venue location from: https://maps.app.goo.gl/PwnQVzABrGX3jKfP6
+// Coordinates: 7.040072, 79.9260445
+const GOOGLE_MAPS_EMBED_SRC = 'https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3959.737782943087!2d79.9260445!3d7.040072!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zN8KwMDInMjQuMyJOIDc5wrA5NicxNS41IkU!5e0!3m2!1sen!2slk!4v1724138400000!5m2!1sen!2slk';
+const GOOGLE_MAPS_SHARE_URL = 'https://maps.app.goo.gl/PwnQVzABrGX3jKfP6';
+
 
 function Venue() {
   const ref = useRef(null);
@@ -291,7 +293,7 @@ function Venue() {
         </div>
 
         <a
-          href={`https://maps.google.com/?q=Colombo,Sri+Lanka`}
+          href={GOOGLE_MAPS_SHARE_URL}
           target="_blank"
           rel="noreferrer"
           className="btn-primary"
