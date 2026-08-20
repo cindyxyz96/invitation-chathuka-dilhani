@@ -408,19 +408,49 @@ function MusicPlayer() {
   );
 }
 
+/* ─── Welcome Screen ────────────────────────────────────── */
+function WelcomeScreen({ onEnter }) {
+  const [exiting, setExiting] = useState(false);
+
+  const handleEnter = () => {
+    setExiting(true);
+    setTimeout(onEnter, 800); // Wait for fade out
+  };
+
+  return (
+    <div className={`welcome-screen ${exiting ? 'exiting' : ''}`}>
+      <div className="welcome-bg" />
+      <div className="welcome-content">
+        <p className="hero-eyebrow">You're Invited</p>
+        <h2 className="welcome-names">Chathuka &amp; Dilhani</h2>
+        <p className="welcome-date">2nd September 2026</p>
+        <button className="btn-primary welcome-btn" onClick={handleEnter}>
+          <span>💌</span>
+          <span>Open Invitation</span>
+        </button>
+      </div>
+    </div>
+  );
+}
+
 /* ─── App ───────────────────────────────────────────────── */
 export default function App() {
+  const [entered, setEntered] = useState(false);
+
   return (
     <>
-      <Navbar />
-      <main>
-        <Hero />
-        <Story />
-        <Countdown />
-        <Venue />
-      </main>
-      <Footer />
-      <MusicPlayer />
+      {!entered && <WelcomeScreen onEnter={() => setEntered(true)} />}
+      <div className={`app-content ${entered ? 'entered' : ''}`}>
+        <Navbar />
+        <main>
+          <Hero />
+          <Story />
+          <Countdown />
+          <Venue />
+        </main>
+        <Footer />
+        <MusicPlayer />
+      </div>
     </>
   );
 }

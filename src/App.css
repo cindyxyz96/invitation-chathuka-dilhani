@@ -1273,3 +1273,84 @@
   opacity: 1;
   transform: translateY(-50%) translateX(0);
 }
+
+/* ── Welcome Screen ──────────────────────────────────────── */
+.welcome-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--light);
+  transition: opacity 0.8s ease-in-out, visibility 0.8s;
+}
+
+.welcome-screen.exiting {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.welcome-bg {
+  position: absolute;
+  inset: 0;
+  background-image: url('/images/hero_bg.jpg');
+  background-size: cover;
+  background-position: center;
+  filter: blur(8px) brightness(0.6);
+  z-index: -1;
+  transform: scale(1.1);
+}
+
+.welcome-content {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 48px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-deep);
+  text-align: center;
+  max-width: 90%;
+  animation: fadeInUp 1s ease-out;
+  border: 1px solid rgba(183,110,121,0.2);
+}
+
+.welcome-names {
+  font-family: var(--font-serif);
+  font-size: 3rem;
+  color: var(--dark);
+  margin: 16px 0;
+  line-height: 1.1;
+}
+
+.welcome-date {
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--medium);
+  margin-bottom: 32px;
+}
+
+.welcome-btn {
+  font-size: 1.1rem;
+  padding: 14px 32px;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  animation: pulse 2s infinite ease-in-out;
+}
+
+/* App content reveal */
+.app-content {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 1s ease-in-out;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.app-content.entered {
+  opacity: 1;
+  visibility: visible;
+  height: auto;
+  overflow: visible;
+}
