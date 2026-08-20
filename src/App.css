@@ -1174,3 +1174,102 @@
   .gallery-item:first-child,
   .gallery-item:nth-child(4) { grid-column: auto; grid-row: auto; }
 }
+
+/* ── Music Player ────────────────────────────────────────── */
+.music-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: white;
+  border: 1px solid rgba(183,110,121,0.2);
+  box-shadow: var(--shadow-medium);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1000;
+  transition: var(--transition);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(20px);
+}
+
+.music-btn.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.music-btn:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-deep);
+  border-color: var(--rose-gold-light);
+}
+
+.music-note {
+  font-size: 1.5rem;
+  color: var(--rose-gold);
+  line-height: 1;
+}
+
+.music-waves {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 16px;
+}
+
+.music-waves span {
+  display: block;
+  width: 3px;
+  background-color: var(--rose-gold);
+  border-radius: 2px;
+  animation: equalize 1s infinite alternate ease-in-out;
+}
+
+.music-waves span:nth-child(1) { height: 100%; animation-delay: 0.1s; }
+.music-waves span:nth-child(2) { height: 60%;  animation-delay: 0.3s; }
+.music-waves span:nth-child(3) { height: 80%;  animation-delay: 0.5s; }
+.music-waves span:nth-child(4) { height: 40%;  animation-delay: 0.2s; }
+.music-waves span:nth-child(5) { height: 70%;  animation-delay: 0.4s; }
+
+@keyframes equalize {
+  0%   { transform: scaleY(0.3); }
+  100% { transform: scaleY(1); }
+}
+
+.music-tooltip {
+  position: absolute;
+  right: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%) translateX(10px);
+  background: var(--dark);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-family: var(--font-sans);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: var(--transition);
+}
+
+.music-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -4px;
+  transform: translateY(-50%);
+  border-width: 4px 0 4px 4px;
+  border-style: solid;
+  border-color: transparent transparent transparent var(--dark);
+}
+
+.music-btn:hover .music-tooltip {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}

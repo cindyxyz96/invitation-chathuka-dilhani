@@ -116,7 +116,7 @@ function Story() {
         Eleven Years of <em>Love &amp; Laughter</em>
       </h2>
       <p className={`section-subtext ${visible ? 'animate-fadeInUp delay-200' : 'opacity-0'}`}>
-        What began 11 years ago as a beautiful connection has grown into a love story that fills every room it enters.
+        What began as a beautiful connection has grown into a love story that fills every room it enters.
       </p>
 
       {/* 11 Years badge row */}
@@ -160,10 +160,10 @@ function Story() {
             "In all the world, there is no heart for me like yours."
           </blockquote>
           <p>
-            Eleven years ago, two souls found each other — and everything changed. What started as a quiet, beautiful friendship blossomed slowly into a love that neither of them could imagine living without. Through the seasons, through the milestones big and small, Chathuka and Dilhani have stood by each other's side with unwavering love and devotion.
+            When two souls found each other, everything changed. What started as a quiet, beautiful friendship blossomed slowly into a love that neither of them could imagine living without. Through the seasons, through the milestones big and small, Chathuka and Dilhani have stood by each other's side with unwavering love and devotion.
           </p>
           <p>
-            Eleven years of laughter echoing through the house. Eleven years of adventures, of new mornings and cozy evenings, of building dreams and turning them into reality, one day at a time.
+            Endless laughter echoing through the house. Countless adventures, new mornings and cozy evenings, building dreams and turning them into reality, one day at a time.
           </p>
           <p>
             And now, after all those beautiful years, they are ready to make it official — to say to the world what their hearts have always known. ✨
@@ -331,6 +331,74 @@ function Footer() {
   );
 }
 
+/* ─── Music Player ──────────────────────────────────────── */
+function MusicPlayer() {
+  const audioRef = useRef(null);
+  const [playing, setPlaying] = useState(false);
+  const [ready, setReady] = useState(false);
+
+  // Show button only after audio can play
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    const onCanPlay = () => setReady(true);
+    audio.addEventListener('canplaythrough', onCanPlay);
+    return () => audio.removeEventListener('canplaythrough', onCanPlay);
+  }, []);
+
+  // Auto-start on the visitor's very first interaction anywhere on the page
+  useEffect(() => {
+    const autoPlay = () => {
+      const audio = audioRef.current;
+      if (!audio || playing) return;
+      audio.play().then(() => setPlaying(true)).catch(() => {});
+    };
+    document.addEventListener('click',      autoPlay, { once: true });
+    document.addEventListener('touchstart', autoPlay, { once: true });
+    document.addEventListener('keydown',    autoPlay, { once: true });
+    return () => {
+      document.removeEventListener('click',      autoPlay);
+      document.removeEventListener('touchstart', autoPlay);
+      document.removeEventListener('keydown',    autoPlay);
+    };
+  }, [playing]);
+
+  const toggle = (e) => {
+    e.stopPropagation();
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (playing) {
+      audio.pause();
+      setPlaying(false);
+    } else {
+      audio.play().then(() => setPlaying(true)).catch(() => {});
+    }
+  };
+
+  return (
+    <>
+      {/* 🎵 Drop your romantic MP3 at: public/audio/romantic.mp3 */}
+      <audio ref={audioRef} src="/audio/romantic.mp3" loop preload="auto" />
+      <button
+        className={`music-btn ${playing ? 'playing' : ''} ${ready ? 'visible' : ''}`}
+        onClick={toggle}
+        aria-label={playing ? 'Pause background music' : 'Play background music'}
+        id="music-toggle-btn"
+        title={playing ? 'Pause music' : 'Play romantic music'}
+      >
+        {playing ? (
+          <span className="music-waves" aria-hidden="true">
+            <span /><span /><span /><span /><span />
+          </span>
+        ) : (
+          <span className="music-note" aria-hidden="true">♪</span>
+        )}
+        <span className="music-tooltip">{playing ? 'Pause music' : 'Play music'}</span>
+      </button>
+    </>
+  );
+}
+
 /* ─── App ───────────────────────────────────────────────── */
 export default function App() {
   return (
@@ -343,6 +411,7 @@ export default function App() {
         <Venue />
       </main>
       <Footer />
+      <MusicPlayer />
     </>
   );
 }
